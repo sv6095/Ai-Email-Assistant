@@ -1,0 +1,2 @@
+// ConfirmDialog component - delete confirmation
+
