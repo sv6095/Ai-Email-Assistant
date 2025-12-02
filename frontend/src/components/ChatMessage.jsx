@@ -1,10 +1,14 @@
 import { Bot, User as UserIcon } from 'lucide-react';
 import { EmailCard } from './EmailCard';
+import { EmailGroupSummary } from './EmailGroupSummary';
 import { cn } from '@/lib/utils';
 
 export const ChatMessage = ({ message, onAction }) => {
   const isUser = message.type === 'user';
   const isSystem = message.type === 'system';
+
+  const hasGroupedEmails = Array.isArray(message.groupedEmails) && message.groupedEmails.length > 0;
+  const shouldRenderEmails = !hasGroupedEmails && message.emails && message.emails.length > 0;
 
   const getButtonVariantClasses = (actionType) => {
     if (actionType === 'delete') {
@@ -67,8 +71,17 @@ export const ChatMessage = ({ message, onAction }) => {
           })}
         </div>
 
+        {/* Smart Inbox Grouping */}
+        {hasGroupedEmails && (
+          <div className="mt-4 space-y-4">
+            {message.groupedEmails.map((group) => (
+              <EmailGroupSummary key={group.category} group={group} />
+            ))}
+          </div>
+        )}
+
         {/* Email Cards */}
-        {message.emails && message.emails.length > 0 && (
+        {shouldRenderEmails && (
           <div className="mt-4 space-y-3">
             {message.emails.map((email, index) => (
               <EmailCard key={email.id || index} email={email} index={index + 1} />

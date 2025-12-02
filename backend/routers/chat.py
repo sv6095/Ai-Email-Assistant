@@ -38,14 +38,19 @@ def get_gmail_service(user: dict = Depends(get_current_user)) -> GmailService:
 
 # Helper Functions 
 
-def create_response(content: str, emails: Optional[List[Dict]] = None, 
-                   actions: Optional[List[Dict]] = None) -> Dict:
+def create_response(
+    content: str,
+    emails: Optional[List[Dict]] = None,
+    actions: Optional[List[Dict]] = None,
+    grouped_emails: Optional[List[Dict]] = None,
+) -> Dict:
     """Create standardized response format"""
     return {
         "id": str(uuid.uuid4()),
         "content": content,
         "emails": emails or [],
         "actions": actions or [],
+        "groupedEmails": grouped_emails or [],
         "timestamp": datetime.utcnow().isoformat()
     }
 
@@ -130,6 +135,29 @@ def prepare_reply_actions(emails: List[Dict]) -> List[Dict]:
         })
     
     return actions
+
+
+def build_group_summaries(categorized: Dict[str, List[Dict]]) -> List[Dict]:
+    """Generate structured summaries for grouped emails."""
+    summaries = []
+    
+    for category, cat_emails in categorized.items():
+        if not cat_emails:
+            continue
+        
+        highlights = []
+        for email in cat_emails[:3]:
+            sender_name = email["sender"]["name"]
+            highlights.append(f"{email['subject']} — {sender_name}")
+        
+        summaries.append({
+            "category": category,
+            "count": len(cat_emails),
+            "highlights": highlights,
+            "emails": cat_emails
+        })
+    
+    return summaries
 
 
 def find_email_by_criteria(
@@ -353,7 +381,8 @@ async def handle_categorize_emails(gmail_service: GmailService, params: Dict) ->
     
     all_emails = [email for emails_list in categorized.values() for email in emails_list]
     actions = prepare_reply_actions(all_emails) if all_emails else []
-    return create_response(content, all_emails, actions)
+    grouped_summary = build_group_summaries(categorized)
+    return create_response(content, all_emails, actions, grouped_summary)
 
 
 async def handle_daily_digest(gmail_service: GmailService, params: Dict) -> Dict:

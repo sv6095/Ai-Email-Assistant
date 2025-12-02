@@ -44,6 +44,7 @@ How can I help you manage your inbox today?`,
       content: response.content || response.message || 'I received your message.',
       emails: response.emails || [],
       actions: response.actions || [],
+      groupedEmails: response.groupedEmails || [],
       timestamp: response.timestamp ? new Date(response.timestamp) : new Date(),
     };
 
