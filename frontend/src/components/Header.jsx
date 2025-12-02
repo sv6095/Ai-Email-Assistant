@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { LogOut, Mail, Settings, MessageSquare } from 'lucide-react';
+import { LogOut, Mail, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const Header = ({ user, onLogout, onToggleThread }) => {
@@ -92,22 +92,7 @@ export const Header = ({ user, onLogout, onToggleThread }) => {
               <p className="text-xs text-muted-foreground">{user?.email || ''}</p>
             </div>
 
-            <div className="py-1">
-              <button
-                onClick={() => {
-                  setIsDropdownOpen(false);
-                  // Settings action can be added here
-                }}
-                className="w-full flex items-center px-2 py-1.5 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
-              </button>
-            </div>
-
-            <div className="border-t border-border"></div>
-
-            <div className="py-1">
+            <div className="py-1 border-t border-border">
               <button
                 onClick={() => {
                   setIsDropdownOpen(false);
