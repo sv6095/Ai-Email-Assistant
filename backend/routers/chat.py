@@ -279,12 +279,10 @@ async def handle_read_emails(gmail_service: GmailService, params: Dict) -> Dict:
     
     emails_with_summaries = enrich_emails_with_summaries(emails)
     
-    content = f"I found {len(emails_with_summaries)} email(s) in your inbox:\n\n"
-    for idx, email in enumerate(emails_with_summaries, 1):
-        content += f"**Email #{idx}**\n"
-        content += f"From: {email['sender']['name']} ({email['sender']['email']})\n"
-        content += f"Subject: {email['subject']}\n"
-        content += f"Summary: {email['summary']}\n\n"
+    # Keep the chat response concise and let the UI render the detailed email cards.
+    # We only send a short intro message; individual email details are provided
+    # via the structured `emails` payload and rendered as cards on the frontend.
+    content = f"I found {len(emails_with_summaries)} email(s) in your inbox. Here they are:"
     
     actions = prepare_reply_actions(emails_with_summaries)
     return create_response(content, emails_with_summaries, actions)
@@ -354,7 +352,8 @@ async def handle_categorize_emails(gmail_service: GmailService, params: Dict) ->
             content += "\n"
     
     all_emails = [email for emails_list in categorized.values() for email in emails_list]
-    return create_response(content, all_emails)
+    actions = prepare_reply_actions(all_emails) if all_emails else []
+    return create_response(content, all_emails, actions)
 
 
 async def handle_daily_digest(gmail_service: GmailService, params: Dict) -> Dict:
@@ -381,8 +380,11 @@ async def handle_daily_digest(gmail_service: GmailService, params: Dict) -> Dict
     digest_text = gemini_service.generate_digest(emails)
     
     content = f"📅 **Today's Email Digest** ({len(emails)} emails)\n\n{digest_text}"
+    top_emails = email_list[:10]
+    actions = prepare_reply_actions(top_emails) if top_emails else []
     
-    return create_response(content, email_list[:10])  # Include top 10 emails
+    # Include top 10 emails and add reply actions so the user can respond directly
+    return create_response(content, top_emails, actions)
 
 
 async def handle_reply_request(
@@ -616,11 +618,8 @@ async def handle_search_emails(gmail_service: GmailService, params: Dict) -> Dic
     
     emails_with_summaries = enrich_emails_with_summaries(emails)
     
-    content = f"I found {len(emails_with_summaries)} email(s) matching your search:\n\n"
-    for idx, email in enumerate(emails_with_summaries, 1):
-        content += f"**Email #{idx}**\n"
-        content += f"From: {email['sender']['name']} ({email['sender']['email']})\n"
-        content += f"Subject: {email['subject']}\n"
-        content += f"Summary: {email['summary']}\n\n"
+    # Keep text concise; detailed info comes from the email cards.
+    content = f"I found {len(emails_with_summaries)} email(s) matching your search. Here they are:"
+    actions = prepare_reply_actions(emails_with_summaries) if emails_with_summaries else []
     
-    return create_response(content, emails_with_summaries)
+    return create_response(content, emails_with_summaries, actions)

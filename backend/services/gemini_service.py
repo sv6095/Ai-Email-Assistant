@@ -70,14 +70,23 @@ Summary:"""
         
         instruction = tone_instructions.get(tone, tone_instructions["professional"])
         
+        # Clear guidance for the model about what a good reply should look like.
         prompt = f"""{instruction}
+
+Write a reply that is:
+- Context aware (based directly on the original email content)
+- Clear and professional
+- Ready to send as-is (no placeholders like "[YOUR NAME]" or "[INSERT DETAILS]")
+- Action-oriented where appropriate (e.g., next steps, confirmations, or follow-ups)
+- Polite and concise, avoiding unnecessary repetition of the original email
 
 Original email from {sender_name}:
 {email_body}
 
 {f'Additional context: {context}' if context else ''}
 
-Write only the reply body. Do not include greetings like "Dear..." or signatures. Be helpful and concise.
+Write only the reply body. Do not include greetings like "Dear..." or signatures. 
+Do not add your own sign-off/signature. Be helpful, specific, and concise.
 
 Reply:"""
         
