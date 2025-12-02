@@ -285,7 +285,7 @@ Here's what each variable does and where to get it:
 The backend can be deployed using any ASGI-compatible server (e.g., Gunicorn, uvicorn):
 
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000
+uvicorn main:app --host 0.0.0.0 --port $port
 ```
 
 ### Frontend
