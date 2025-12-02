@@ -23,7 +23,7 @@ GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 
 
-FRONTEND_URL = os.getenv("FRONTEND_URL", "https://ai-email-assistant-zeta.vercel.app")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://ai-email-assistant-pxbe.vercel.app")
 BACKEND_URL = os.getenv("BACKEND_URL", "https://ai-email-assistant-g4go.onrender.com")
 
 REDIRECT_URI = f"{BACKEND_URL}/auth/callback"

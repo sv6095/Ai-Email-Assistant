@@ -59,9 +59,9 @@ cd email-assistant
 4. Create OAuth 2.0 credentials:
    - Click "Create Credentials" → "OAuth client ID"
    - Choose "Web application"
-   - Add these authorized redirect URIs:
-     - `http://localhost:8000/auth/callback` (for local testing)
-     - `https://ai-email-assistant-zeta.vercel.app/auth/callback` (for production)
+   - Add this authorized redirect URI:
+     - `https://ai-email-assistant-g4go.onrender.com/auth/callback`
+   - **Important:** Always use the backend Render URL for OAuth callbacks so Google sends the authorization code directly to the API instead of any local environment.
    - Save your **Client ID** and **Client Secret**—you'll need these soon
 5. Generate a Gemini API key:
    - Go to "APIs & Services" → "Credentials"
@@ -105,7 +105,7 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 JWT_SECRET_KEY=your_jwt_secret_key
 
 # API URLs
-FRONTEND_URL=https://ai-email-assistant-zeta.vercel.app
+FRONTEND_URL=https://ai-email-assistant-pxbe.vercel.app
 BACKEND_URL=https://ai-email-assistant-g4go.onrender.com
 
 # Gemini API Key
@@ -141,9 +141,7 @@ VITE_API_BASE_URL=https://ai-email-assistant-g4go.onrender.com
    - Go to "APIs & Services" > "Credentials"
    - Click "Create Credentials" > "OAuth client ID"
    - Choose "Web application"
-   - Add authorized redirect URIs:
-     - `http://localhost:8000/auth/callback` (for local development)
-     - `https://ai-email-assistant-g4go.onrender.com/auth/callback` (for production)
+   - Add the authorized redirect URI `https://ai-email-assistant-g4go.onrender.com/auth/callback`
    - Copy the Client ID and Client Secret to your `.env` file
 5. Get your Gemini API key:
    - Go to "APIs & Services" > "Credentials"
@@ -152,39 +150,22 @@ VITE_API_BASE_URL=https://ai-email-assistant-g4go.onrender.com
 
 ## Running the Application
 
-### Start the Backend Server
+### Backend Server (Hosted)
 
-1. Navigate to the backend directory:
-```bash
-cd backend
-```
+- Production API: `https://ai-email-assistant-g4go.onrender.com`
+- Interactive docs:
+  - Swagger UI: `https://ai-email-assistant-g4go.onrender.com/docs`
+  - ReDoc: `https://ai-email-assistant-g4go.onrender.com/redoc`
 
-2. Activate your virtual environment (if not already activated)
+### Frontend Application (Hosted)
 
-3. Start the FastAPI server:
-```bash
-uvicorn main:app --reload --port 8000
-```
+- Production UI: `https://ai-email-assistant-pxbe.vercel.app`
 
-The backend API will be available at `http://localhost:8000`
-
-### Start the Frontend Development Server
-
-1. Navigate to the frontend directory:
-```bash
-cd frontend
-```
-
-2. Start the development server:
-```bash
-npm run dev
-```
-
-The frontend application will be available at `http://localhost:5173`
+> If you need to run the project locally for development, set your own `FRONTEND_URL` and `BACKEND_URL` in `.env` to match your environment before starting the servers.
 
 ## Usage
 
-1. **Access the Application**: Open `http://localhost:5173` in your browser
+1. **Access the Application**: Open `https://ai-email-assistant-pxbe.vercel.app` in your browser
 2. **Login**: Click "Login with Google" to authenticate with your Google account
 3. **Grant Permissions**: Authorize the application to access your Gmail
 4. **Start Chatting**: Use natural language commands to interact with your emails
@@ -250,9 +231,9 @@ Here's what each variable does and where to get it:
 | `GOOGLE_CLIENT_SECRET` | Your Google OAuth app secret | Google Cloud Console → Credentials | Yes |
 | `JWT_SECRET_KEY` | Secret key for signing authentication tokens | Generate a random string (use `python -c "import secrets; print(secrets.token_hex(32))"`) | Yes |
 | `GEMINI_API_KEY` | API key for Google Gemini AI | Google Cloud Console → APIs & Services → Credentials | Yes |
-| `FRONTEND_URL` | Where your frontend is hosted | Your frontend deployment URL (e.g., Vercel) | No (default: http://localhost:5173) |
-| `BACKEND_URL` | Where your backend is hosted | Your backend deployment URL (e.g., Render) | No (default: http://localhost:8000) |
-| `VITE_API_BASE_URL` | Backend URL for frontend to call (frontend .env only) | Same as BACKEND_URL | No (default: http://localhost:8000) |
+| `FRONTEND_URL` | Where your frontend is hosted | Your frontend deployment URL (e.g., Vercel) | No (default: https://ai-email-assistant-pxbe.vercel.app) |
+| `BACKEND_URL` | Where your backend is hosted | Your backend deployment URL (e.g., Render) | No (default: https://ai-email-assistant-g4go.onrender.com) |
+| `VITE_API_BASE_URL` | Backend URL for frontend to call (frontend .env only) | Same as BACKEND_URL | No (default: https://ai-email-assistant-g4go.onrender.com) |
 
 ## Security Notes
 
@@ -288,8 +269,8 @@ Here's what each variable does and where to get it:
 ### Backend Development
 
 - The backend uses FastAPI with automatic API documentation
-- Access API docs at `http://localhost:8000/docs` (Swagger UI)
-- Alternative docs at `http://localhost:8000/redoc` (ReDoc)
+- Access API docs at `https://ai-email-assistant-g4go.onrender.com/docs` (Swagger UI)
+- Alternative docs at `https://ai-email-assistant-g4go.onrender.com/redoc` (ReDoc)
 
 ### Frontend Development
 

@@ -11,6 +11,10 @@ app = FastAPI(
     description="Backend for AI-powered email management"
 )
 
+# Deployed frontend lives on Vercel; fall back to that URL when env var missing
+DEFAULT_FRONTEND_URL = "https://ai-email-assistant-pxbe.vercel.app"
+FRONTEND_URL = os.getenv("FRONTEND_URL", DEFAULT_FRONTEND_URL)
+
 # Session middleware (for OAuth state)
 app.add_middleware(
     SessionMiddleware,
@@ -18,12 +22,15 @@ app.add_middleware(
 )
 
 # CORS middleware
+allowed_origins = {
+    DEFAULT_FRONTEND_URL,
+    FRONTEND_URL,
+    "https://ai-email-assistant-g4go.onrender.com",  # backend self-calls during OAuth redirects
+}
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://ai-email-assistant-zeta.vercel.app",
-        os.getenv("FRONTEND_URL", "https://ai-email-assistant-zeta.vercel.app")
-    ],
+    allow_origins=list(allowed_origins),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
