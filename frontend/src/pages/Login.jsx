@@ -1,21 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Shield, Zap, Bot } from 'lucide-react';
+import { auth } from '../services/auth';
 import './Login.css';
 
 function Login({ onLogin, isLoading: externalLoading }) {
   const [internalLoading, setInternalLoading] = useState(false);
   const isLoading = externalLoading !== undefined ? externalLoading : internalLoading;
 
+  // Check for token in URL (from OAuth callback - fallback if redirected to login)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const error = urlParams.get('error');
+    
+    if (token) {
+      localStorage.setItem('token', token);
+      // Redirect to dashboard
+      window.location.href = '/dashboard';
+    } else if (error) {
+      console.error('Login error:', error);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const handleGoogleSignIn = async () => {
-    if (onLogin) {
-      onLogin();
-    } else {
+    try {
       setInternalLoading(true);
-      // TODO: Implement Google OAuth flow
-      console.log('Initiating Google sign-in...');
-      setTimeout(() => {
-        setInternalLoading(false);
-      }, 2000);
+      // Redirect to backend login endpoint, which will redirect to Google OAuth
+      auth.login();
+    } catch (error) {
+      console.error('Error initiating Google sign-in:', error);
+      setInternalLoading(false);
     }
   };
 
