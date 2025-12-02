@@ -526,17 +526,22 @@ async def handle_delete_request(
     actions = [{
         "id": f"delete-{target_email['id']}",
         "type": "delete",
-        "label": "Delete Email",
+        "label": "Move to Trash",
         "emailId": target_email["id"],
         "payload": {"subject": subject, "sender": sender_name},
         "requiresConfirmation": True,
-        "confirmTitle": "Permanently Delete Email?",
-        "confirmDescription": f"This will permanently delete \"{subject}\" from {sender_name}. This action cannot be undone.",
-        "confirmLabel": "Delete Permanently",
+        "confirmTitle": "Move Email to Trash?",
+        "confirmDescription": f"\"{subject}\" from {sender_name} will be moved to Trash. You can restore it from Gmail later.",
+        "confirmLabel": "Move to Trash",
         "cancelLabel": "Cancel"
     }]
     
-    content = f"I found the email you want to delete:\n\n**From:** {sender_name}\n**Subject:** {subject}\n\nPlease confirm to delete this email."
+    content = (
+        f"I found the email you want to delete:\n\n"
+        f"**From:** {sender_name}\n"
+        f"**Subject:** {subject}\n\n"
+        "Confirm to move this email to Trash."
+    )
     
     return create_response(
         content,
@@ -625,12 +630,12 @@ async def handle_send_reply(gmail_service: GmailService, email_id: str, payload:
 
 
 async def handle_delete_email(gmail_service: GmailService, email_id: str) -> Dict:
-    """Delete an email"""
+    """Move an email to trash"""
     try:
-        gmail_service.delete_email(email_id)
-        return create_response("✅ Email permanently deleted successfully!")
+        gmail_service.trash_email(email_id)
+        return create_response("🗑️ Email moved to Trash. You can restore it from Gmail if needed.")
     except Exception as e:
-        return create_response(f"❌ Failed to delete email: {str(e)}")
+        return create_response(f"❌ Failed to move email to Trash: {str(e)}")
 
 
 async def handle_search_emails(gmail_service: GmailService, params: Dict) -> Dict:

@@ -242,31 +242,31 @@ class GmailService:
             print(f"Error sending reply: {error}")
             raise Exception(f"Failed to send reply: {str(error)}")
     
-    def delete_email(self, message_id: str) -> Dict:
+    def trash_email(self, message_id: str) -> Dict:
         """
-        Permanently delete email
+        Move email to Trash (soft delete)
         
         Args:
-            message_id: ID of email to delete
+            message_id: ID of email to move to trash
         
         Returns:
             Success status
         """
         try:
-            self.service.users().messages().delete(
+            self.service.users().messages().trash(
                 userId=self.user_id,
                 id=message_id
             ).execute()
             
             return {
                 'id': message_id,
-                'status': 'deleted',
-                'message': 'Email permanently deleted'
+                'status': 'trashed',
+                'message': 'Email moved to Trash'
             }
             
         except HttpError as error:
-            print(f"Error deleting email: {error}")
-            raise Exception(f"Failed to delete email: {str(error)}")
+            print(f"Error trashing email: {error}")
+            raise Exception(f"Failed to move email to Trash: {str(error)}")
     
     def search_emails(self, query: str, max_results: int = 10) -> List[Dict]:
         """
